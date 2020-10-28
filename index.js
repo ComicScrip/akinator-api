@@ -1,3 +1,4 @@
+const PORT = process.env.PORT || 5000;
 const express = require('express');
 const { Aki } = require('aki-api');
 const uniqId = require('uniqid');
@@ -32,6 +33,4 @@ app.get('/nextquestion', async (req, res) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log('server listening on port 5000');
-});
+app.listen(PORT, () => {});
