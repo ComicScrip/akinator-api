@@ -2,10 +2,13 @@ const PORT = process.env.PORT || 5000;
 const express = require('express');
 const { Aki } = require('aki-api');
 const uniqId = require('uniqid');
+const cors = require("cors"),
 
 const app = express();
 const region = 'en';
 const akiInstances = {};
+
+app.use(cors());
 
 app.get('/newsession', async (req, res) => {
   const sessionId = uniqId();
