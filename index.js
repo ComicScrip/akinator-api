@@ -18,7 +18,7 @@ app.get('/newsession', async (req, res) => {
     await aki.start();
     res.json({ sessionId });
   } catch (e) {
-    console.error(e);
+    console.error('err', e);
     res.sendStatus(500);
   }
 });
