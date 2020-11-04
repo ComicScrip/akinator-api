@@ -14,8 +14,13 @@ app.get('/newsession', async (req, res) => {
   const sessionId = uniqId();
   const aki = new Aki(region);
   akiInstances[sessionId] = aki;
-  await aki.start();
-  res.json({ sessionId });
+  try {
+    await aki.start();
+    res.json({ sessionId });
+  } catch (e) {
+    console.error(JSON.stringify(e));
+    res.sendStatus(500);
+  }
 });
 
 app.get('/nextquestion', async (req, res) => {
