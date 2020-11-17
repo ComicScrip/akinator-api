@@ -24,20 +24,34 @@ app.get('/newsession', async (req, res) => {
 });
 
 app.get('/nextquestion', async (req, res) => {
-  const { sessionId } = req.query;
+  const { sessionId, progressToWin = 95, maxNumberOfSteps = 30 } = req.query;
+  const minProgress = parseInt(progressToWin, 10);
+  const maxSteps = parseInt(maxNumberOfSteps, 10);
   const aki = akiInstances[sessionId];
+  let gameOver = false;
+
   if (!aki) {
     res.json({ error: 'you must provide a valid session id' });
   } else {
-    await aki.step(parseInt(req.query.answer, 10));
-    if (aki.progress >= 70 || aki.currentStep >= 78) {
-      await aki.win();
-      console.log('firstGuess:', aki.answers);
-      console.log('guessCount:', aki.guessCount);
-      res.json({ guessCount: aki.guessCount, answers: aki.answers });
-    } else {
-      res.json({ question: aki.question, answers: aki.answers });
+    if (
+      req.query.answer &&
+      aki.answers.map((_, i) => i).includes(parseInt(req.query.answer, 10))
+    ) {
+      await aki.step(parseInt(req.query.answer, 10));
     }
+    if (aki.progress >= minProgress || aki.currentStep >= maxSteps) {
+      await aki.win();
+      gameOver = true;
+    }
+    const { guessCount, answers, question, progress, currentStep } = aki;
+    res.json({
+      question,
+      answers,
+      guessCount,
+      progress,
+      gameOver,
+      currentStep,
+    });
   }
 });
 
