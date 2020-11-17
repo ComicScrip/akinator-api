@@ -55,4 +55,23 @@ app.get('/nextquestion', async (req, res) => {
   }
 });
 
+app.get('/back', async (req, res) => {
+  const { sessionId } = req.query;
+  const aki = akiInstances[sessionId];
+
+  if (!aki) {
+    res.json({ error: 'you must provide a valid session id' });
+  } else {
+    await aki.back();
+    const { guessCount, answers, question, progress, currentStep } = aki;
+    res.json({
+      question,
+      answers,
+      guessCount,
+      progress,
+      currentStep,
+    });
+  }
+});
+
 app.listen(PORT, () => {});
